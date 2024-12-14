@@ -117,4 +117,26 @@ class NoteController extends Controller
     }
 
 
+    public function deleteNote(Request $request, $note_id){
+
+        $note = Note::find($note_id);
+
+        if (!$note) {
+            return response()->json([
+                'error' => [
+                    'code' => '404_NOT_FOUND',
+                    'message' => 'Note not found for the specified user'
+                ]
+            ], 404);
+        }
+
+        $note->delete();
+
+        return response()->json([
+            'message' => "Note deleted successfully"
+        ], 200);
+
+    }
+
+
 }

@@ -11,3 +11,5 @@ Route::get('/notes', [NoteController::class, 'getUserNotes']);
 
 Route::patch('/notes/{note_id}', [NoteController::class, 'editNote'])->withoutMiddleware(VerifyCsrfToken::class);
 
+Route::delete('/notes/{note_id}', [NoteController::class, 'deleteNote'])->withoutMiddleware(VerifyCsrfToken::class);
+
