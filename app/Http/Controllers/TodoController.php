@@ -10,25 +10,23 @@ use Illuminate\Support\Facades\Validator;
 
 class TodoController extends Controller
 {
+
+    public function viewTodos($note_id){
+
+        $todos = Todo::where('note_id', $note_id)->get();
+
+        $response = $todos->map(function ($todo) {
+            return [
+                'id' => $todo->id,
+                'note_id' => $todo->note_id,
+                'title' => $todo->title,
+                'is_finished' => $todo->is_finished
+            ];
+        });
+
+        return response()->json($response, 200);
+    }
     public function createTodo(Request $request, $note_id){
-        //         Endpoint: POST /notes/{note_id}/todos
-
-        // Request Body:
-
-        // {
-        //   "title": "Buy groceries",
-        //   "text": "Pick up items from the list",
-        //   "is_finished": false
-        // }
-        // Response:
-
-        // {
-        //   "id": "1",
-        //   "note_id": "1",
-        //   "title": "Buy groceries",
-        //   "text": "Pick up items from the list",
-        //   "is_finished": false
-        // }
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'is_finished' => 'required|boolean',

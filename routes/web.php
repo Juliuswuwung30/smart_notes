@@ -14,6 +14,8 @@ Route::patch('/notes/{note_id}', [NoteController::class, 'editNote'])->withoutMi
 
 Route::delete('/notes/{note_id}', [NoteController::class, 'deleteNote'])->withoutMiddleware(VerifyCsrfToken::class);
 
+Route::get('/notes/{note_id}/todos', [TodoController::class, 'viewTodos']);
+
 Route::post('/notes/{note_id}/todos', [TodoController::class, 'createTodo'])->withoutMiddleware(VerifyCsrfToken::class);;
 
 Route::patch('/notes/{note_id}/todos/{todo_id}', [TodoController::class, 'updateTodo'])->withoutMiddleware(VerifyCsrfToken::class);
