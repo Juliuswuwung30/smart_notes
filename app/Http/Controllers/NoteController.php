@@ -62,21 +62,6 @@ class NoteController extends Controller
 
     public function editNote(Request $request, $note_id){
 
-        // PUT /notes/{note_id}
-        // request body
-        // {
-        //     "title": "Updated Shopping List",
-        //     "content": "- Milk\n- Eggs\n- Bread\n- Apples"
-        // }
-
-        // Response
-        // {
-        //     "id": "1",
-        //     "title": "Updated Shopping List",
-        //     "content": "- Milk\n- Eggs\n- Bread\n- Apples",
-        //     "updatedAt": "2023-05-02T16:22:11Z"
-        // }
-
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'content' => 'required|string',
