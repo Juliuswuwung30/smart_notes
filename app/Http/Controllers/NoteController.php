@@ -59,4 +59,62 @@ class NoteController extends Controller
 
         return response()->json($response, 200);
     }
+
+    public function editNote(Request $request, $note_id){
+
+        // PUT /notes/{note_id}
+        // request body
+        // {
+        //     "title": "Updated Shopping List",
+        //     "content": "- Milk\n- Eggs\n- Bread\n- Apples"
+        // }
+
+        // Response
+        // {
+        //     "id": "1",
+        //     "title": "Updated Shopping List",
+        //     "content": "- Milk\n- Eggs\n- Bread\n- Apples",
+        //     "updatedAt": "2023-05-02T16:22:11Z"
+        // }
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'content' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code' => '400_BAD_REQUEST',
+                    'message' => 'Missing or invalid title or content parameter',
+                    'details' => $validator->errors(),
+                ]
+            ], 400);
+        }
+
+        $note = Note::find($note_id);
+
+        if (!$note) {
+            return response()->json([
+                'error' => [
+                    'code' => '404_NOT_FOUND',
+                    'message' => 'Note not found for the specified user'
+                ]
+            ], 404);
+        }
+
+        $note->title = $request->input('title');
+        $note->content = $request->input('content');
+        $note->save();
+
+        return response()->json([
+            'id' => $note->id,
+            'title' => $note->title,
+            'content' => $note->content,
+            'updatedAt' => $note->updated_at->toIso8601String(),
+        ], 200);
+
+    }
+
+
 }
