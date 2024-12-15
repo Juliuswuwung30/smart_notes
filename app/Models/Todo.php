@@ -13,7 +13,7 @@ class Todo extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'title',
+        'text',
         'is_finished',
         'note_id'
     ];

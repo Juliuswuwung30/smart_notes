@@ -18,6 +18,6 @@ Route::get('/notes/{note_id}/todos', [TodoController::class, 'viewTodos']);
 
 Route::post('/notes/{note_id}/todos', [TodoController::class, 'createTodo'])->withoutMiddleware(VerifyCsrfToken::class);;
 
-Route::patch('/notes/{note_id}/todos/{todo_id}', [TodoController::class, 'updateTodo'])->withoutMiddleware(VerifyCsrfToken::class);
+Route::put('/notes/{note_id}/todos/{todo_id}', [TodoController::class, 'updateTodo'])->withoutMiddleware(VerifyCsrfToken::class);
 
 Route::delete('/notes/{note_id}/todos/{todo_id}', [TodoController::class, 'deleteTodo'])->withoutMiddleware(VerifyCsrfToken::class);

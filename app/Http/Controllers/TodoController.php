@@ -15,11 +15,20 @@ class TodoController extends Controller
 
         $todos = Todo::where('note_id', $note_id)->get();
 
+        if ($todos->isEmpty()) {
+            return response()->json([
+                'error' => [
+                    'code' => '404_NOT_FOUND',
+                    'message' => 'No todos found for the specified note'
+                ]
+            ], 404);
+        }
+
         $response = $todos->map(function ($todo) {
             return [
                 'id' => $todo->id,
                 'note_id' => $todo->note_id,
-                'title' => $todo->title,
+                'text' => $todo->text,
                 'is_finished' => $todo->is_finished
             ];
         });
@@ -28,7 +37,7 @@ class TodoController extends Controller
     }
     public function createTodo(Request $request, $note_id){
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
+            'text' => 'required|string',
             'is_finished' => 'required|boolean',
         ]);
 
@@ -36,14 +45,14 @@ class TodoController extends Controller
             return response()->json([
                 'error' => [
                     'code' => '400_BAD_REQUEST',
-                    'message' => 'Missing or invalid title, text, or is_finished parameter',
+                    'message' => 'Missing or invalid text, text, or is_finished parameter',
                     'details' => $validator->errors(),
                 ]
             ], 400);
         }
 
         $todo = Todo::create([
-            'title' => $request->input('title'),
+            'text' => $request->input('text'),
             'is_finished' => $request->input('is_finished'),
             'note_id' => $note_id,
         ]);
@@ -51,14 +60,14 @@ class TodoController extends Controller
         return response()->json([
             'id' => $todo->id,
             'note_id' => $note_id,
-            'title' => $todo->title,
+            'text' => $todo->text,
             'is_finished' => $todo->is_finished,
         ], 200);
     }
 
     public function updateTodo(Request $request, $note_id, $todo_id){
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
+            'text' => 'required|string',
             'is_finished' => 'required|boolean',
         ]);
 
@@ -66,7 +75,7 @@ class TodoController extends Controller
             return response()->json([
                 'error' => [
                     'code' => '400_BAD_REQUEST',
-                    'message' => 'Missing or invalid title, text, or is_finished parameter',
+                    'message' => 'Missing or invalid text, text, or is_finished parameter',
                     'details' => $validator->errors(),
                 ]
             ], 400);
@@ -83,14 +92,14 @@ class TodoController extends Controller
             ], 404);
         }
 
-        $todo->title = $request->input('title');
+        $todo->text = $request->input('text');
         $todo->is_finished = $request->input('is_finished');
         $todo->save();
 
         return response()->json([
             'id' => $todo->id,
             'note_id' => $note_id,
-            'title' => $todo->title,
+            'text' => $todo->text,
             'is_finished' => $todo->is_finished,
         ], 200);
     }
