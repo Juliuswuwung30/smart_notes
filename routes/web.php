@@ -9,5 +9,5 @@ Route::get('/', function () {
 });
 Route::get('/notes', [NoteController::class, 'getUserNotes']);
 
-Route::patch('/notes/{note_id}', [NoteController::class, 'editNote'])->withoutMiddleware(VerifyCsrfToken::class);
+Route::put('/notes/{note_id}', [NoteController::class, 'editNote'])->withoutMiddleware(VerifyCsrfToken::class);
 
