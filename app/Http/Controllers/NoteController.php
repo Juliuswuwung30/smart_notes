@@ -97,6 +97,7 @@ class NoteController extends Controller
             'title' => $note->title,
             'content' => $note->content,
             'updatedAt' => $note->updated_at->toIso8601String(),
+            'icon'=>"Chart.small"
         ], 200);
 
     }
