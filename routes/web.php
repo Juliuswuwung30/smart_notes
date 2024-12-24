@@ -21,3 +21,6 @@ Route::post('/notes/{note_id}/todos', [TodoController::class, 'createTodo'])->wi
 Route::put('/notes/{note_id}/todos/{todo_id}', [TodoController::class, 'updateTodo'])->withoutMiddleware(VerifyCsrfToken::class);
 
 Route::delete('/notes/{note_id}/todos/{todo_id}', [TodoController::class, 'deleteTodo'])->withoutMiddleware(VerifyCsrfToken::class);
+
+Route::post('/notes/{note_id}/generate-todos', [NoteController::class, 'generateTodos'])
+->withoutMiddleware(VerifyCsrfToken::class);

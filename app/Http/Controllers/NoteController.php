@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
-
+use App\Services\OpenAIService;
+use App\Models\Todo;
 use App\Models\Note;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
 
 
 class NoteController extends Controller
@@ -124,5 +125,43 @@ class NoteController extends Controller
 
     }
 
+
+    public function generateTodos(Request $request, string $noteId, OpenAIService $openAI): JsonResponse
+    {
+        $note = Note::find($noteId);
+        
+        if (!$note) {
+            return response()->json([
+                'error' => [
+                    'code' => '404_NOT_FOUND',
+                    'message' => 'No notes found for the specified note'
+                ]
+            ], 404);
+        }
+        
+        // Generate todos using OpenAI
+        $generatedTodos = $openAI->generateTodos($note->content);
+        
+        if (empty($generatedTodos)) {
+            return response()->json([]);
+        }
+        
+        // Create todos in database
+        $todos = collect($generatedTodos)->map(function ($todoText) use ($noteId) {
+            return Todo::create([
+                'text' => $todoText,
+                'is_finished' => false,
+                'note_id' => $noteId
+            ]);
+        })->map(function ($todo) {
+            return [
+                'id' => $todo->id,
+                'todo' => $todo->text,
+                'isCompleted' => (bool) $todo->is_finished
+            ];
+        });
+        
+        return response()->json($todos);
+    }
 
 }
