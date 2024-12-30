@@ -12,7 +12,8 @@ class Note extends Model
 
     protected $guarded = [];
 
-    public function todolist(){
-        return $this->hasMany(Todo::class);
+    public function todolist()
+    {
+        return $this->hasMany(Todo::class, 'note_id', 'id');
     }
-}
+}    
