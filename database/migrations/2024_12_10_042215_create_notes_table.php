@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->text('content');
+            $table->string('icon')->nullable();
             $table->uuid('user_id');
             $table->timestamps();
         });
