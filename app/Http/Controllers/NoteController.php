@@ -61,6 +61,40 @@ class NoteController extends Controller
         return response()->json($response, 200);
     }
 
+    /**
+     * Create a new note
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createNote(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|string',
+            'title' => 'required|string',
+            'content' => 'nullable|string',
+            'icon' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code' => '400_BAD_REQUEST',
+                    'message' => 'Missing or invalid parameters'
+                ]
+            ], 400);
+        }
+
+        $note = Note::create([
+            'user_id' => $request->input('user_id'),
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'icon' => $request->input('icon'),
+        ]);
+
+        return response()->json(['id' => $note->id], 201);
+    }
+
     public function editNote(Request $request, $note_id){
 
         $validator = Validator::make($request->all(), [

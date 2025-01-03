@@ -10,6 +10,8 @@ Route::get('/', function () {
 });
 Route::get('/notes', [NoteController::class, 'getUserNotes']);
 
+Route::post('/notes', [NoteController::class, 'createNote'])->withoutMiddleware(VerifyCsrfToken::class);
+
 Route::put('/notes/{note_id}', [NoteController::class, 'editNote'])->withoutMiddleware(VerifyCsrfToken::class);
 
 Route::delete('/notes/{note_id}', [NoteController::class, 'deleteNote'])->withoutMiddleware(VerifyCsrfToken::class);
