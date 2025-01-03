@@ -8,7 +8,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::get('/notes', [NoteController::class, 'getUserNotes']);
+Route::get('/notes/completed', [NoteController::class, 'getCompletedUserNotes']);
 
 Route::post('/notes', [NoteController::class, 'createNote'])->withoutMiddleware(VerifyCsrfToken::class);
 
