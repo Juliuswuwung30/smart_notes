@@ -10,8 +10,10 @@ class Todo extends Model
     /** @use HasFactory<\Database\Factories\TodoFactory> */
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
-        'title',
+        'text',
         'is_finished',
         'note_id'
     ];
