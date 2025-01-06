@@ -37,7 +37,7 @@ class NoteController extends Controller
         }
 
         $userId = $request->query('user_id');
-        $notes = Note::where('user_id', $userId)->get();
+        $notes = Note::with('todolist')->where('user_id', $userId)->get();
 
         if ($notes->isEmpty()) {
             return response()->json([
@@ -54,7 +54,15 @@ class NoteController extends Controller
                 'title' => $note->title,
                 'content' => $note->content,
                 'updatedAt' => $note->updated_at->toIso8601String(),
+                'icon' => 'Chart.small',
                 'isComplete' => $note->todolist()->where('is_finished', false)->doesntExist(),
+                'todoList' => $note->todolist->map(function ($todo) {
+                    return [
+                        'id' => $todo->id,
+                        'todo' => $todo->text,
+                        'isCompleted' => (bool) $todo->is_finished
+                    ];
+                })
             ];
         });
 
@@ -116,7 +124,7 @@ class NoteController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|string',
-            'title' => 'required|string',
+            'title' => 'string',
             'content' => 'nullable|string',
             'icon' => 'nullable|string',
         ]);
