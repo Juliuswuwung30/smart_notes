@@ -62,7 +62,7 @@ class TodoController extends Controller
             'note_id' => $note_id,
             'text' => $todo->text,
             'is_finished' => $todo->is_finished,
-        ], 200);
+        ], 201);
     }
 
     public function updateTodo(Request $request, $note_id, $todo_id){
