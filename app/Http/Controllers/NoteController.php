@@ -16,6 +16,55 @@ class NoteController extends Controller
     //
 
     /**
+     * Get User Note
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserNote(Request $request, $note_id)
+    {
+
+        if (!$note_id || !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $note_id)) {
+            return response()->json([
+            'error' => [
+                    'code' => '400_BAD_REQUEST',
+                    'message' => 'Missing or invalid note id parameter'
+                ]
+            ], 400);
+        }
+
+        $userId = $request->query('user_id');
+        $note = Note::with('todolist')->find($note_id);
+
+        if (!$note) {
+            return response()->json([
+                'error' => [
+                    'code' => '404_NOT_FOUND',
+                    'message' => 'Note not found for the specified user'
+                ]
+            ], 404);
+        }
+
+        $response = [
+            'id' => $note->id,
+            'title' => $note->title,
+            'content' => $note->content,
+            'updatedAt' => $note->updated_at->toIso8601String(),
+            'icon' => 'Chart.small',
+            'isComplete' => $note->todolist()->where('is_finished', false)->doesntExist(),
+            'todoList' => $note->todolist->map(function ($todo) {
+                return [
+                    'id' => $todo->id,
+                    'todo' => $todo->text,
+                    'isCompleted' => (bool) $todo->is_finished
+                ];
+            })
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
      * Get User Notes
      *
      * @param Request $request

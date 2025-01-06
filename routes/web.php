@@ -9,6 +9,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/note/{note_id}', [NoteController::class, 'getUserNote']);
 Route::get('/notes', [NoteController::class, 'getUserNotes']);
 Route::get('/notes/completed', [NoteController::class, 'getCompletedUserNotes']);
 
