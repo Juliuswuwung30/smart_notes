@@ -90,7 +90,7 @@ class NoteController extends Controller
         $userId = $request->query('user_id');
 
         // QUERY TO GET COMPLETED NOTES
-        $notes = Note::where('user_id', $userId)
+        $notes = Note::with('todolist')->where('user_id', $userId)
             ->whereDoesntHave('todolist', function ($query) {
                 $query->where('is_finished', false);
             })
@@ -112,8 +112,16 @@ class NoteController extends Controller
                 'id' => $note->id,
                 'title' => $note->title,
                 'content' => $note->content,
-                'icon' => 'Chart.small', // Assuming a static icon for now
                 'updatedAt' => $note->updated_at->toIso8601String(),
+                'icon' => 'Chart.small',
+                'isComplete' => $note->todolist()->where('is_finished', false)->doesntExist(),
+                'todoList' => $note->todolist->map(function ($todo) {
+                    return [
+                        'id' => $todo->id,
+                        'todo' => $todo->text,
+                        'isCompleted' => (bool) $todo->is_finished
+                    ];
+                })
             ];
         });
 
